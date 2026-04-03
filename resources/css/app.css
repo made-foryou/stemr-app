@@ -11,28 +11,31 @@
 @theme {
     --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Warm neutral base — replaces default zinc */
-    --color-zinc-50: #faf9f7;
-    --color-zinc-100: #f5f0eb;
-    --color-zinc-200: #e8e2da;
-    --color-zinc-300: #d4ccc2;
-    --color-zinc-400: #a8a098;
-    --color-zinc-500: #78726b;
-    --color-zinc-600: #565149;
-    --color-zinc-700: #3d3832;
-    --color-zinc-800: #252220;
-    --color-zinc-900: #1a1816;
-    --color-zinc-950: #0f0e0d;
+    /* Aubergine thema — warm base tones mapped to Flux's zinc scale */
+    --color-zinc-50: #FAF7F2;
+    --color-zinc-100: #F5E8F4;
+    --color-zinc-200: #E8D6E6;
+    --color-zinc-300: #D4BCD2;
+    --color-zinc-400: #A08A9E;
+    --color-zinc-500: #786876;
+    --color-zinc-600: #5C4A5A;
+    --color-zinc-700: #452E43;
+    --color-zinc-800: #2A1A28;
+    --color-zinc-900: #1E0F1C;
+    --color-zinc-950: #130810;
 
-    /* Indigo/violet accent */
-    --color-accent: var(--color-indigo-600);
-    --color-accent-content: var(--color-indigo-700);
+    /* Aubergine accent — primary color */
+    --color-accent: #6B3568;
+    --color-accent-content: #522A4F;
     --color-accent-foreground: var(--color-white);
 
-    /* Custom semantic colors */
-    --color-vota-glow: #818cf8;
-    --color-vota-error: #f87171;
-    --color-vota-success: #6ee7b7;
+    /* Vota semantic colors */
+    --color-vota-primary: #6B3568;
+    --color-vota-primary-dark: #522A4F;
+    --color-vota-primary-light: #F5E8F4;
+    --color-vota-accent: #C4703F;
+    --color-vota-bg: #FAF7F2;
+    --color-vota-text: #2A1A28;
 
     /* Animation durations */
     --animate-fade-in: fade-in 0.6s ease-out both;
@@ -42,8 +45,8 @@
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-indigo-500);
-        --color-accent-content: var(--color-indigo-400);
+        --color-accent: #8B4E88;
+        --color-accent-content: #B87CB5;
         --color-accent-foreground: var(--color-white);
     }
 }
@@ -103,12 +106,14 @@
     @apply !mb-0 !leading-tight font-medium tracking-tight;
 }
 
-/* Custom focus ring with indigo glow */
+/* Custom focus ring with aubergine glow */
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-indigo-500/40 ring-offset-2 ring-offset-zinc-950;
-    box-shadow: 0 0 12px rgba(129, 140, 248, 0.15);
+    @apply outline-hidden ring-2 ring-offset-2;
+    ring-color: rgba(107, 53, 104, 0.4);
+    ring-offset-color: var(--color-zinc-50);
+    box-shadow: 0 0 12px rgba(107, 53, 104, 0.12);
 }
 
 /* Button hover scale */

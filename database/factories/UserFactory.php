@@ -59,6 +59,18 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the model was registered via Apple OAuth.
+     */
+    public function withApple(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'apple_id' => fake()->unique()->numerify('####################'),
+            'password' => null,
+            'email_verified_at' => now(),
+        ]);
+    }
+
+    /**
      * Indicate that the model has two-factor authentication configured.
      */
     public function withTwoFactor(): static
