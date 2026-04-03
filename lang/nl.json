@@ -15,5 +15,8 @@
     "A fresh verification link has been sent to your email address.": "Er is een nieuwe verificatielink naar je e-mailadres gestuurd.",
     "name": "naam",
     "email": "e-mailadres",
-    "password": "wachtwoord"
+    "password": "wachtwoord",
+    "Doorgaan met Google": "Doorgaan met Google",
+    "of": "of",
+    "Er is een fout opgetreden bij het inloggen met Google. Probeer het opnieuw.": "Er is een fout opgetreden bij het inloggen met Google. Probeer het opnieuw."
 }
