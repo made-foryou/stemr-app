@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\Auth\AppleController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\HomeController;
 use App\Livewire\AccountSettings;
 use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
