@@ -86,12 +86,37 @@ test('google callback handles error gracefully', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users cannot access google redirect', function () {
-    $user = User::factory()->create();
+test('authenticated user can link google account', function () {
+    $user = User::factory()->create(['google_id' => null]);
 
-    Socialite::fake('google');
+    Socialite::fake('google', (new SocialiteUser)->map([
+        'id' => 'google-link-123',
+        'name' => $user->name,
+        'email' => $user->email,
+    ]));
 
-    $response = $this->actingAs($user)->get(route('auth.google.redirect'));
+    $response = $this->actingAs($user)->get(route('auth.google.callback'));
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('account.settings'));
+
+    $user->refresh();
+    expect($user->google_id)->toBe('google-link-123');
+});
+
+test('authenticated user cannot link google account already used by another user', function () {
+    $otherUser = User::factory()->create(['google_id' => 'google-taken']);
+    $user = User::factory()->create(['google_id' => null]);
+
+    Socialite::fake('google', (new SocialiteUser)->map([
+        'id' => 'google-taken',
+        'name' => $user->name,
+        'email' => $user->email,
+    ]));
+
+    $response = $this->actingAs($user)->get(route('auth.google.callback'));
+
+    $response->assertRedirect(route('account.settings'));
+
+    $user->refresh();
+    expect($user->google_id)->toBeNull();
 });

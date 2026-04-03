@@ -86,14 +86,39 @@ test('apple callback handles error gracefully', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users cannot access apple redirect', function () {
-    $user = User::factory()->create();
+test('authenticated user can link apple account', function () {
+    $user = User::factory()->create(['apple_id' => null]);
 
-    Socialite::fake('apple');
+    Socialite::fake('apple', (new SocialiteUser)->map([
+        'id' => 'apple-link-123',
+        'name' => $user->name,
+        'email' => $user->email,
+    ]));
 
-    $response = $this->actingAs($user)->get(route('auth.apple.redirect'));
+    $response = $this->actingAs($user)->post(route('auth.apple.callback'));
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('account.settings'));
+
+    $user->refresh();
+    expect($user->apple_id)->toBe('apple-link-123');
+});
+
+test('authenticated user cannot link apple account already used by another user', function () {
+    $otherUser = User::factory()->create(['apple_id' => 'apple-taken']);
+    $user = User::factory()->create(['apple_id' => null]);
+
+    Socialite::fake('apple', (new SocialiteUser)->map([
+        'id' => 'apple-taken',
+        'name' => $user->name,
+        'email' => $user->email,
+    ]));
+
+    $response = $this->actingAs($user)->post(route('auth.apple.callback'));
+
+    $response->assertRedirect(route('account.settings'));
+
+    $user->refresh();
+    expect($user->apple_id)->toBeNull();
 });
 
 test('apple callback uses fallback name when name is null', function () {

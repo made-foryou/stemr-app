@@ -43,6 +43,35 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Poll::class);
     }
 
+    public function hasPassword(): bool
+    {
+        return $this->password !== null;
+    }
+
+    public function hasGoogleLinked(): bool
+    {
+        return $this->google_id !== null;
+    }
+
+    public function hasAppleLinked(): bool
+    {
+        return $this->apple_id !== null;
+    }
+
+    /**
+     * Determine if the given provider can be safely disconnected.
+     */
+    public function canDisconnectProvider(string $provider): bool
+    {
+        $hasPassword = $this->hasPassword();
+
+        return match ($provider) {
+            'google' => $hasPassword || $this->hasAppleLinked(),
+            'apple' => $hasPassword || $this->hasGoogleLinked(),
+            default => false,
+        };
+    }
+
     /**
      * Get the user's initials
      */

@@ -9,12 +9,19 @@
                 <span class="text-lg font-semibold tracking-tight" style="color: var(--color-vota-text);">{{ config('app.name', 'Vota') }}</span>
             </a>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <flux:button variant="subtle" type="submit" size="sm">
-                    {{ __('Uitloggen') }}
-                </flux:button>
-            </form>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('account.settings') }}" wire:navigate>
+                    <flux:button variant="subtle" size="sm" icon="cog-6-tooth">
+                        {{ __('Account') }}
+                    </flux:button>
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <flux:button variant="subtle" type="submit" size="sm">
+                        {{ __('Uitloggen') }}
+                    </flux:button>
+                </form>
+            </div>
         </div>
     </header>
 

@@ -26,12 +26,47 @@ class AppleController extends Controller
         try {
             $appleUser = Socialite::driver('apple')->user();
         } catch (\Throwable) {
-            return redirect()->route('login')->with(
+            $route = Auth::check() ? 'account.settings' : 'login';
+
+            return redirect()->route($route)->with(
                 'status',
                 __('Er is een fout opgetreden bij het inloggen met Apple. Probeer het opnieuw.'),
             );
         }
 
+        // Authenticated user linking their Apple account
+        if (Auth::check()) {
+            return $this->linkToCurrentUser($appleUser);
+        }
+
+        // Guest login/registration flow
+        return $this->loginOrRegister($appleUser);
+    }
+
+    /**
+     * Link Apple account to the currently authenticated user.
+     */
+    protected function linkToCurrentUser(mixed $appleUser): RedirectResponse
+    {
+        $existingUser = User::where('apple_id', $appleUser->getId())->first();
+
+        if ($existingUser && $existingUser->id !== Auth::id()) {
+            return redirect()->route('account.settings')->with(
+                'status',
+                __('Dit Apple-account is al gekoppeld aan een ander account.'),
+            );
+        }
+
+        Auth::user()->forceFill(['apple_id' => $appleUser->getId()])->save();
+
+        return redirect()->route('account.settings');
+    }
+
+    /**
+     * Login existing user or register new user via Apple.
+     */
+    protected function loginOrRegister(mixed $appleUser): RedirectResponse
+    {
         $user = User::where('apple_id', $appleUser->getId())->first();
 
         if (! $user) {

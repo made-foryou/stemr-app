@@ -26,12 +26,47 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Throwable) {
-            return redirect()->route('login')->with(
+            $route = Auth::check() ? 'account.settings' : 'login';
+
+            return redirect()->route($route)->with(
                 'status',
                 __('Er is een fout opgetreden bij het inloggen met Google. Probeer het opnieuw.'),
             );
         }
 
+        // Authenticated user linking their Google account
+        if (Auth::check()) {
+            return $this->linkToCurrentUser($googleUser);
+        }
+
+        // Guest login/registration flow
+        return $this->loginOrRegister($googleUser);
+    }
+
+    /**
+     * Link Google account to the currently authenticated user.
+     */
+    protected function linkToCurrentUser(mixed $googleUser): RedirectResponse
+    {
+        $existingUser = User::where('google_id', $googleUser->getId())->first();
+
+        if ($existingUser && $existingUser->id !== Auth::id()) {
+            return redirect()->route('account.settings')->with(
+                'status',
+                __('Dit Google-account is al gekoppeld aan een ander account.'),
+            );
+        }
+
+        Auth::user()->forceFill(['google_id' => $googleUser->getId()])->save();
+
+        return redirect()->route('account.settings');
+    }
+
+    /**
+     * Login existing user or register new user via Google.
+     */
+    protected function loginOrRegister(mixed $googleUser): RedirectResponse
+    {
         $user = User::where('google_id', $googleUser->getId())->first();
 
         if (! $user) {
