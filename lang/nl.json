@@ -1,0 +1,19 @@
+{
+    "The :attribute has already been taken.": "Het :attribute is al in gebruik.",
+    "The :attribute must be at least :min characters.": "Het :attribute moet minimaal :min tekens zijn.",
+    "The :attribute field is required.": "Het :attribute veld is verplicht.",
+    "The :attribute field must be a valid email address.": "Het :attribute veld moet een geldig e-mailadres zijn.",
+    "The :attribute field confirmation does not match.": "De bevestiging van het :attribute veld komt niet overeen.",
+    "The password is incorrect.": "Het wachtwoord is onjuist.",
+    "These credentials do not match our records.": "Deze gegevens komen niet overeen met onze records.",
+    "Too many login attempts. Please try again in :seconds seconds.": "Te veel inlogpogingen. Probeer het opnieuw over :seconds seconden.",
+    "The provided password is incorrect.": "Het opgegeven wachtwoord is onjuist.",
+    "The provided two factor authentication code was invalid.": "De opgegeven tweestapsverificatiecode is ongeldig.",
+    "The provided two factor recovery code was invalid.": "De opgegeven herstelcode is ongeldig.",
+    "We have emailed your password reset link.": "We hebben je een link gestuurd om je wachtwoord te resetten.",
+    "Your password has been reset.": "Je wachtwoord is gewijzigd.",
+    "A fresh verification link has been sent to your email address.": "Er is een nieuwe verificatielink naar je e-mailadres gestuurd.",
+    "name": "naam",
+    "email": "e-mailadres",
+    "password": "wachtwoord"
+}

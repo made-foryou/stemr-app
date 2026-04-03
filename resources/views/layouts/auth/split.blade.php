@@ -3,37 +3,88 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
-        <div class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div class="bg-muted relative hidden h-full flex-col p-10 text-white lg:flex dark:border-e dark:border-neutral-800">
-                <div class="absolute inset-0 bg-neutral-900"></div>
-                <a href="{{ route('home') }}" class="relative z-20 flex items-center text-lg font-medium" wire:navigate>
-                    <span class="flex h-10 w-10 items-center justify-center rounded-md">
-                        <x-app-logo-icon class="me-2 h-7 fill-current text-white" />
+    <body class="min-h-screen bg-zinc-50 antialiased dark:bg-zinc-950">
+        <div class="relative grid min-h-dvh lg:grid-cols-[1fr_1.1fr]">
+            {{-- Branding panel --}}
+            <div class="relative hidden flex-col justify-between overflow-hidden bg-zinc-900 p-12 lg:flex">
+                {{-- Subtle geometric pattern --}}
+                <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+                <div class="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-600/8 blur-3xl"></div>
+
+                {{-- Logo --}}
+                <a href="{{ route('home') }}" class="relative z-10 flex items-center gap-3" wire:navigate>
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600">
+                        <x-app-logo-icon class="h-5 w-5 fill-current text-white" />
                     </span>
-                    {{ config('app.name', 'Laravel') }}
+                    <span class="text-xl font-semibold tracking-tight text-white">{{ config('app.name', 'Vota') }}</span>
                 </a>
 
-                @php
-                    [$message, $author] = str(Illuminate\Foundation\Inspiring::quotes()->random())->explode('-');
-                @endphp
+                {{-- Animated graphic --}}
+                <div class="relative z-10 mx-auto my-auto aspect-square w-full max-w-xs">
+                    {{-- Ambient glow --}}
+                    <div class="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/8 blur-3xl vota-pulse"></div>
 
-                <div class="relative z-20 mt-auto">
-                    <blockquote class="space-y-2">
-                        <flux:heading size="lg">&ldquo;{{ trim($message) }}&rdquo;</flux:heading>
-                        <footer><flux:heading>{{ trim($author) }}</flux:heading></footer>
-                    </blockquote>
+                    {{-- Orbital rings --}}
+                    <div class="absolute inset-6 rounded-full border border-white/[0.06]"></div>
+                    <div class="absolute inset-16 rounded-full border border-white/[0.04]"></div>
+
+                    {{-- Center piece — checkmark --}}
+                    <div class="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-indigo-600 shadow-lg shadow-indigo-500/25 vota-breathe">
+                        <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+
+                    {{-- Orbiting dots --}}
+                    <div class="absolute inset-0 vota-orbit" style="animation-duration: 25s;">
+                        <div class="absolute left-1/2 top-0 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-indigo-400 shadow-md shadow-indigo-400/30 vota-breathe" style="animation-delay: 0.5s;"></div>
+                    </div>
+
+                    <div class="absolute inset-0 vota-orbit" style="animation-duration: 30s; animation-direction: reverse;">
+                        <div class="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-violet-400 shadow-md shadow-violet-400/30 vota-breathe" style="animation-delay: 1.2s;"></div>
+                    </div>
+
+                    <div class="absolute inset-0 vota-orbit" style="animation-duration: 20s;">
+                        <div class="absolute left-0 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-indigo-300 shadow-md shadow-indigo-300/30 vota-breathe" style="animation-delay: 0.8s;"></div>
+                    </div>
+
+                    {{-- Floating geometric accents --}}
+                    <div class="absolute right-4 top-8 vota-float" style="animation-delay: 0.3s;">
+                        <div class="h-6 w-6 rotate-45 rounded-lg border-2 border-indigo-400/25 bg-indigo-500/5"></div>
+                    </div>
+
+                    <div class="absolute bottom-12 left-6 vota-float" style="animation-delay: 1.5s;">
+                        <div class="h-5 w-5 rounded-full border-2 border-violet-400/20 bg-violet-500/5"></div>
+                    </div>
+
+                    <div class="absolute bottom-24 right-10 vota-float" style="animation-delay: 2.2s;">
+                        <div class="h-4 w-4 rotate-12 rounded-md border-2 border-indigo-300/15 bg-indigo-400/5"></div>
+                    </div>
+                </div>
+
+                {{-- Tagline --}}
+                <div class="relative z-10 space-y-6">
+                    <h2 class="text-4xl font-bold leading-tight tracking-tight text-white">
+                        Samen de beste<br>keuze maken.
+                    </h2>
+                    <p class="max-w-sm text-lg font-light leading-relaxed text-zinc-400">
+                        Maak een poll, nodig je team uit, en ontdek welke optie de favoriet is.
+                    </p>
                 </div>
             </div>
-            <div class="w-full lg:p-8">
-                <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-                    <a href="{{ route('home') }}" class="z-20 flex flex-col items-center gap-2 font-medium lg:hidden" wire:navigate>
-                        <span class="flex h-9 w-9 items-center justify-center rounded-md">
-                            <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
-                        </span>
 
-                        <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
+            {{-- Form panel --}}
+            <div class="flex items-center justify-center px-6 py-12 lg:px-16">
+                <div class="w-full max-w-sm animate-fade-in">
+                    {{-- Mobile logo --}}
+                    <a href="{{ route('home') }}" class="mb-10 flex flex-col items-center gap-3 lg:hidden" wire:navigate>
+                        <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600">
+                            <x-app-logo-icon class="h-6 w-6 fill-current text-white" />
+                        </span>
+                        <span class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-white">{{ config('app.name', 'Vota') }}</span>
                     </a>
+
                     {{ $slot }}
                 </div>
             </div>
