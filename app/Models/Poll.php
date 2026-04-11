@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 #[Fillable(['title', 'description', 'status', 'origin_address', 'closed_at'])]
@@ -55,6 +56,16 @@ class Poll extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the options for this poll.
+     *
+     * @return HasMany<Option, $this>
+     */
+    public function options(): HasMany
+    {
+        return $this->hasMany(Option::class)->orderBy('sort_order');
     }
 
     public function isOpen(): bool

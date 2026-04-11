@@ -22,8 +22,9 @@ test('a poll can be created with a title', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Beste restaurant voor teamuitje')
-        ->call('save')
-        ->assertRedirect(route('poll.manage', Poll::first()));
+        ->call('savePollInfo')
+        ->assertSet('step', 2)
+        ->assertNotDispatched('redirect');
 
     expect(Poll::count())->toBe(1);
     expect(Poll::first())
@@ -42,8 +43,8 @@ test('a poll can be created with a title and description', function () {
         ->test(CreatePoll::class)
         ->set('title', 'Teamuitje stemming')
         ->set('description', 'Stem op je favoriete locatie voor het teamuitje.')
-        ->call('save')
-        ->assertRedirect(route('poll.manage', Poll::first()));
+        ->call('savePollInfo')
+        ->assertSet('step', 2);
 
     expect(Poll::first())
         ->title->toBe('Teamuitje stemming')
@@ -56,7 +57,7 @@ test('title is required to create a poll', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', '')
-        ->call('save')
+        ->call('savePollInfo')
         ->assertHasErrors(['title' => 'required']);
 
     expect(Poll::count())->toBe(0);
@@ -68,7 +69,7 @@ test('title cannot exceed 255 characters', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', str_repeat('a', 256))
-        ->call('save')
+        ->call('savePollInfo')
         ->assertHasErrors(['title' => 'max']);
 });
 
@@ -79,7 +80,7 @@ test('description cannot exceed 5000 characters', function () {
         ->test(CreatePoll::class)
         ->set('title', 'Test poll')
         ->set('description', str_repeat('a', 5001))
-        ->call('save')
+        ->call('savePollInfo')
         ->assertHasErrors(['description' => 'max']);
 });
 
@@ -90,7 +91,7 @@ test('poll is linked to the authenticated user', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Mijn poll')
-        ->call('save');
+        ->call('savePollInfo');
 
     expect(Poll::first()->user_id)->toBe($user->id);
     expect($otherUser->polls)->toHaveCount(0);
@@ -102,7 +103,7 @@ test('poll defaults to open status', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Status test')
-        ->call('save');
+        ->call('savePollInfo');
 
     expect(Poll::first()->isOpen())->toBeTrue();
 });
@@ -113,12 +114,12 @@ test('poll gets a unique slug', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Dezelfde titel')
-        ->call('save');
+        ->call('savePollInfo');
 
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Dezelfde titel')
-        ->call('save');
+        ->call('savePollInfo');
 
     $polls = Poll::orderBy('id')->get();
     expect($polls[0]->slug)->toBe('dezelfde-titel');
@@ -131,7 +132,7 @@ test('poll is visible on dashboard after creation', function () {
     Livewire::actingAs($user)
         ->test(CreatePoll::class)
         ->set('title', 'Mijn nieuwe poll')
-        ->call('save');
+        ->call('savePollInfo');
 
     $this->actingAs($user)
         ->get(route('dashboard'))
