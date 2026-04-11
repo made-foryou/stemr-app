@@ -81,7 +81,7 @@
                             Gratis voor iedereen
                         </div>
 
-                        <h1 class="text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+                        <h1 class="font-display text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
                             Samen kiezen,<br>
                             <span style="color: var(--color-vota-primary);">altijd raak.</span>
                         </h1>
@@ -188,7 +188,7 @@
                     <span class="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style="background-color: rgba(107, 53, 104, 0.08); color: var(--color-vota-primary);">
                         Simpel als 1-2-3
                     </span>
-                    <h2 class="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
+                    <h2 class="mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
                         Hoe het werkt
                     </h2>
                 </div>
@@ -257,7 +257,7 @@
                     <span class="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style="background-color: rgba(196, 112, 63, 0.08); color: var(--color-vota-accent);">
                         Alles wat je nodig hebt
                     </span>
-                    <h2 class="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
+                    <h2 class="mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
                         Krachtig én simpel
                     </h2>
                 </div>
@@ -365,7 +365,7 @@
                     <span class="inline-block rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest" style="border-color: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.5);">
                         Voor elke gelegenheid
                     </span>
-                    <h2 class="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    <h2 class="mt-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                         Waarvoor gebruik je Vota?
                     </h2>
                 </div>
@@ -445,7 +445,7 @@
 
             <div class="relative z-10 mx-auto max-w-3xl px-6 text-center">
                 <div class="reveal">
-                    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                    <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
                         Klaar om samen<br>te kiezen?
                     </h2>
                     <p class="mx-auto mt-5 max-w-md text-lg font-light text-white/60">

@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Poll;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+#[Layout('layouts.app')]
+#[Title('Optie toevoegen')]
+class CreateOption extends Component
+{
+    public Poll $poll;
+
+    #[Validate('required|string|max:100')]
+    public string $name = '';
+
+    #[Validate('nullable|url|max:2048')]
+    public string $imageUrl = '';
+
+    #[Validate('nullable|string|max:500')]
+    public string $description = '';
+
+    public function mount(Poll $poll): void
+    {
+        abort_unless($poll->user_id === auth()->id(), 403);
+    }
+
+    public function save(): void
+    {
+        $this->validate();
+
+        $nextOrder = $this->poll->options()->max('sort_order') + 1;
+
+        $option = $this->poll->options()->create([
+            'name' => $this->name,
+            'image_url' => $this->imageUrl ?: null,
+            'description' => $this->description ?: null,
+            'sort_order' => $nextOrder,
+        ]);
+
+        $this->redirect(route('option.manage', [$this->poll, $option]), navigate: true);
+    }
+
+    public function render(): View
+    {
+        return view('livewire.create-option');
+    }
+}

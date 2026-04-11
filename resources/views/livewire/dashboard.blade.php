@@ -1,29 +1,19 @@
 <div class="min-h-screen">
-    {{-- Top bar --}}
-    <header class="border-b border-zinc-200">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3" wire:navigate>
-                <span class="flex h-9 w-9 items-center justify-center rounded-xl" style="background-color: var(--color-vota-primary);">
-                    <x-app-logo-icon class="h-4 w-4 fill-current text-white" />
-                </span>
-                <span class="text-lg font-semibold tracking-tight" style="color: var(--color-vota-text);">{{ config('app.name', 'Vota') }}</span>
+    <x-app-header>
+        <x-slot:actions>
+            <a href="{{ route('account.settings') }}" wire:navigate>
+                <flux:button variant="subtle" size="sm" icon="cog-6-tooth">
+                    {{ __('Account') }}
+                </flux:button>
             </a>
-
-            <div class="flex items-center gap-3">
-                <a href="{{ route('account.settings') }}" wire:navigate>
-                    <flux:button variant="subtle" size="sm" icon="cog-6-tooth">
-                        {{ __('Account') }}
-                    </flux:button>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <flux:button variant="subtle" type="submit" size="sm">
-                        {{ __('Uitloggen') }}
-                    </flux:button>
-                </form>
-            </div>
-        </div>
-    </header>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <flux:button variant="subtle" type="submit" size="sm">
+                    {{ __('Uitloggen') }}
+                </flux:button>
+            </form>
+        </x-slot:actions>
+    </x-app-header>
 
     <main class="mx-auto max-w-6xl px-6 py-12 lg:py-16">
         @if($polls->isEmpty())
@@ -78,7 +68,7 @@
                 {{-- Welcome message + CTA --}}
                 <div>
                     <div class="animate-fade-in">
-                        <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight lg:!text-4xl">
+                        <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight lg:!text-4xl font-display">
                             {{ __('Welkom, :name', ['name' => auth()->user()->name]) }}
                         </flux:heading>
                         <flux:subheading class="mt-3 !text-lg !text-zinc-500">
@@ -86,7 +76,7 @@
                         </flux:subheading>
                     </div>
 
-                    <div class="mt-10 animate-slide-up rounded-2xl border border-zinc-200 bg-white p-8" style="animation-delay: 0.15s;">
+                    <div class="mt-10 animate-slide-up vota-card p-8" style="animation-delay: 0.15s;">
                         <div class="flex flex-col items-start gap-4">
                             <div class="flex h-12 w-12 items-center justify-center rounded-2xl" style="background-color: var(--color-vota-primary-light);">
                                 <flux:icon.plus class="h-6 w-6" style="color: var(--color-vota-primary);" />
@@ -114,7 +104,7 @@
             {{-- Page heading --}}
             <div class="flex items-center justify-between animate-fade-in">
                 <div>
-                    <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight">
+                    <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight font-display">
                         {{ __('Mijn polls') }}
                     </flux:heading>
                     <flux:subheading class="mt-1 !text-zinc-500">
@@ -133,7 +123,7 @@
             <div class="mt-8 space-y-4">
                 @foreach($polls as $poll)
                     <a href="{{ route('poll.manage', $poll) }}"
-                       class="group block animate-slide-up rounded-2xl border border-zinc-200 bg-white p-6 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+                       class="group block animate-slide-up vota-card vota-card-interactive p-6"
                        style="animation-delay: {{ $loop->index * 0.06 }}s;"
                        wire:navigate>
                         <div class="flex items-center justify-between gap-4">
