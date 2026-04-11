@@ -1,21 +1,5 @@
 <div class="min-h-screen">
-    {{-- Top bar --}}
-    <header class="border-b border-zinc-200">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3" wire:navigate>
-                <span class="flex h-9 w-9 items-center justify-center rounded-xl" style="background-color: var(--color-vota-primary);">
-                    <x-app-logo-icon class="h-4 w-4 fill-current text-white" />
-                </span>
-                <span class="text-lg font-semibold tracking-tight" style="color: var(--color-vota-text);">{{ config('app.name', 'Vota') }}</span>
-            </a>
-
-            <a href="{{ route('dashboard') }}" wire:navigate>
-                <flux:button variant="subtle" size="sm" icon="arrow-left">
-                    {{ __('Terug') }}
-                </flux:button>
-            </a>
-        </div>
-    </header>
+    <x-app-header :back-route="route('dashboard')" />
 
     {{-- Step indicator --}}
     <div class="mx-auto max-w-2xl px-6 pt-8">
@@ -44,7 +28,7 @@
         @if ($step === 1)
             {{-- Step 1: Poll info --}}
             <div class="animate-fade-in">
-                <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight">
+                <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight font-display">
                     {{ __('Nieuwe poll') }}
                 </flux:heading>
                 <flux:subheading class="mt-2 !text-zinc-500">
@@ -52,7 +36,7 @@
                 </flux:subheading>
             </div>
 
-            <form wire:submit="savePollInfo" class="mt-10 animate-slide-up space-y-6 rounded-2xl border border-zinc-200 bg-white p-8" style="animation-delay: 0.15s;">
+            <form wire:submit="savePollInfo" class="mt-10 animate-slide-up vota-card space-y-6 p-8" style="animation-delay: 0.15s;">
                 <flux:field>
                     <flux:label>{{ __('Titel') }}</flux:label>
                     <flux:input wire:model="title" placeholder="{{ __('Bijv. Beste restaurant voor teamuitje') }}" autofocus />
@@ -80,7 +64,7 @@
         @else
             {{-- Step 2: Options --}}
             <div class="animate-fade-in">
-                <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight">
+                <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight font-display">
                     {{ __('Opties toevoegen') }}
                 </flux:heading>
                 <flux:subheading class="mt-2 !text-zinc-500">
@@ -92,7 +76,7 @@
             @if ($this->options->isNotEmpty())
                 <ul wire:sort="reorderOptions" class="mt-8 space-y-3">
                     @foreach ($this->options as $option)
-                        <li wire:key="option-{{ $option->id }}" wire:sort:item="{{ $option->id }}" class="animate-slide-up rounded-xl border border-zinc-200 bg-white transition-shadow hover:shadow-sm">
+                        <li wire:key="option-{{ $option->id }}" wire:sort:item="{{ $option->id }}" class="animate-slide-up vota-card !rounded-xl"
                             <div class="flex items-center gap-4 p-4">
                                 {{-- Drag handle --}}
                                 <div wire:sort:handle class="cursor-grab text-zinc-300 hover:text-zinc-500 active:cursor-grabbing">
@@ -128,7 +112,7 @@
             @endif
 
             {{-- Add / Edit option form --}}
-            <div class="mt-6 animate-slide-up rounded-2xl border border-zinc-200 bg-white p-6" style="animation-delay: 0.1s;">
+            <div class="mt-6 animate-slide-up vota-card p-6" style="animation-delay: 0.1s;">
                 <flux:heading size="lg">
                     {{ $editingOptionId ? __('Optie bewerken') : __('Optie toevoegen') }}
                 </flux:heading>

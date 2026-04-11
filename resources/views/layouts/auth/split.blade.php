@@ -65,7 +65,7 @@
 
                 {{-- Tagline --}}
                 <div class="relative z-10 space-y-6">
-                    <h2 class="text-4xl font-bold leading-tight tracking-tight text-white">
+                    <h2 class="font-display text-4xl font-bold leading-tight tracking-tight text-white">
                         Samen de beste<br>keuze maken.
                     </h2>
                     <p class="max-w-sm text-lg font-light leading-relaxed text-white/60">

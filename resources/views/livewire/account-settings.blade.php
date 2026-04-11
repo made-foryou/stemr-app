@@ -1,33 +1,18 @@
 <div class="min-h-screen">
-    {{-- Top bar --}}
-    <header class="border-b border-zinc-200">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3" wire:navigate>
-                <span class="flex h-9 w-9 items-center justify-center rounded-xl" style="background-color: var(--color-vota-primary);">
-                    <x-app-logo-icon class="h-4 w-4 fill-current text-white" />
-                </span>
-                <span class="text-lg font-semibold tracking-tight" style="color: var(--color-vota-text);">{{ config('app.name', 'Vota') }}</span>
-            </a>
-
-            <div class="flex items-center gap-3">
-                <a href="{{ route('dashboard') }}" wire:navigate>
-                    <flux:button variant="subtle" size="sm" icon="arrow-left">
-                        {{ __('Dashboard') }}
-                    </flux:button>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <flux:button variant="subtle" type="submit" size="sm">
-                        {{ __('Uitloggen') }}
-                    </flux:button>
-                </form>
-            </div>
-        </div>
-    </header>
+    <x-app-header :back-route="route('dashboard')" back-label="{{ __('Dashboard') }}">
+        <x-slot:actions>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <flux:button variant="subtle" type="submit" size="sm">
+                    {{ __('Uitloggen') }}
+                </flux:button>
+            </form>
+        </x-slot:actions>
+    </x-app-header>
 
     <main class="mx-auto max-w-3xl px-6 py-12">
         <div class="animate-fade-in">
-            <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight">
+            <flux:heading size="xl" class="!text-3xl !font-bold !tracking-tight font-display">
                 {{ __('Account instellingen') }}
             </flux:heading>
         </div>
@@ -36,7 +21,7 @@
             {{-- ═══════════════════════════════════════════ --}}
             {{-- SECTIE 1: Wachtwoord instellen / wijzigen  --}}
             {{-- ═══════════════════════════════════════════ --}}
-            <div class="animate-slide-up rounded-2xl border border-zinc-200 bg-white p-6 lg:p-8" style="animation-delay: 0.05s;">
+            <div class="animate-slide-up vota-card p-6 lg:p-8" style="animation-delay: 0.05s;">
                 <flux:heading size="lg" class="!font-semibold">{{ __('Wachtwoord') }}</flux:heading>
 
                 @if(! auth()->user()->hasPassword())
@@ -96,7 +81,7 @@
             {{-- ═══════════════════════════════════════════ --}}
             {{-- SECTIE 2: Google                            --}}
             {{-- ═══════════════════════════════════════════ --}}
-            <div class="animate-slide-up rounded-2xl border border-zinc-200 bg-white p-6 lg:p-8" style="animation-delay: 0.1s;">
+            <div class="animate-slide-up vota-card p-6 lg:p-8" style="animation-delay: 0.1s;">
                 <div class="flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
@@ -153,7 +138,7 @@
             {{-- ═══════════════════════════════════════════ --}}
             {{-- SECTIE 3: Apple                             --}}
             {{-- ═══════════════════════════════════════════ --}}
-            <div class="animate-slide-up rounded-2xl border border-zinc-200 bg-white p-6 lg:p-8" style="animation-delay: 0.15s;">
+            <div class="animate-slide-up vota-card p-6 lg:p-8" style="animation-delay: 0.15s;">
                 <div class="flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
