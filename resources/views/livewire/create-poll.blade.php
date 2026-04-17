@@ -119,15 +119,65 @@
 
                 <form wire:submit="{{ $editingOptionId ? 'updateOption' : 'addOption' }}" class="mt-4 space-y-4">
                     <flux:field>
+                        <flux:label>{{ __('URL importeren') }}</flux:label>
+                        <div class="relative">
+                            <flux:input wire:model.live.blur="optionSourceUrl" type="url" placeholder="{{ __('https://booking.com/hotel/...') }}" />
+                            @if ($isFetchingUrl)
+                                <div wire:poll.2s="checkScrapeResult" class="absolute top-1/2 right-3 -translate-y-1/2">
+                                    <flux:icon.arrow-path variant="mini" class="animate-spin text-zinc-400" />
+                                </div>
+                            @endif
+                        </div>
+                        <flux:description>{{ __('Plak een URL om automatisch de gegevens op te halen.') }}</flux:description>
+                        <flux:error name="optionSourceUrl" />
+                        @if ($fetchError)
+                            <p class="mt-1 text-sm text-red-600">{{ $fetchError }}</p>
+                        @endif
+                    </flux:field>
+
+                    @if (!empty($scrapedData) && !$isFetchingUrl)
+                        @php
+                            $hasSuggestions = collect($scrapedData)->filter(fn($val, $key) =>
+                                !empty($val) && isset($this->getScrapedFieldMapping()[$key]) && $this->{$this->getScrapedFieldMapping()[$key]} !== $val
+                            )->isNotEmpty();
+                        @endphp
+
+                        @if ($hasSuggestions)
+                            <div class="flex items-center justify-between rounded-lg border border-dashed border-[var(--color-vota-primary)]/30 bg-[var(--color-vota-primary-light)] px-4 py-3 animate-fade-in">
+                                <div class="flex items-center gap-2 text-sm text-zinc-700">
+                                    <flux:icon.sparkles variant="mini" class="text-[var(--color-vota-primary)]" />
+                                    {{ __('Gegevens opgehaald van de URL') }}
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button type="button" wire:click="applyAllSuggestions"
+                                        class="text-sm font-medium text-[var(--color-vota-primary)] transition-colors hover:text-[var(--color-vota-primary-dark)]">
+                                        {{ __('Alles toepassen') }}
+                                    </button>
+                                    <button type="button" wire:click="dismissAllSuggestions"
+                                        class="text-sm text-zinc-400 transition-colors hover:text-zinc-600">
+                                        {{ __('Negeren') }}
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+                    <flux:field>
                         <flux:label>{{ __('Naam') }} <span class="text-red-500">*</span></flux:label>
                         <flux:input wire:model="optionName" placeholder="{{ __('Bijv. Restaurant De Kas') }}" maxlength="100" />
                         <flux:error name="optionName" />
+                        @if (!empty($scrapedData['title']) && ($scrapedData['title'] !== $optionName))
+                            <x-scrape-suggestion :value="$scrapedData['title']" field="title" />
+                        @endif
                     </flux:field>
 
                     <flux:field>
                         <flux:label>{{ __('Afbeelding URL') }}</flux:label>
                         <flux:input wire:model.blur="optionImageUrl" type="url" placeholder="{{ __('https://voorbeeld.nl/afbeelding.jpg') }}" />
                         <flux:error name="optionImageUrl" />
+                        @if (!empty($scrapedData['image_url']) && ($scrapedData['image_url'] !== $optionImageUrl))
+                            <x-scrape-suggestion :value="$scrapedData['image_url']" field="image_url" />
+                        @endif
                         @if ($optionImageUrl)
                             <div class="mt-2" x-data="{ error: false }">
                                 <img
@@ -152,6 +202,9 @@
                         </div>
                         <flux:textarea wire:model="optionDescription" placeholder="{{ __('Optioneel: beschrijf deze optie...') }}" rows="3" maxlength="500" />
                         <flux:error name="optionDescription" />
+                        @if (!empty($scrapedData['description']) && ($scrapedData['description'] !== $optionDescription))
+                            <x-scrape-suggestion :value="$scrapedData['description']" field="description" />
+                        @endif
                     </flux:field>
 
                     <div class="flex items-center justify-end gap-3 pt-2">

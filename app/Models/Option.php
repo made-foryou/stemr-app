@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'image_url', 'description', 'sort_order'])]
+#[Fillable(['name', 'image_url', 'source_url', 'description', 'sort_order'])]
 #[Hidden(['id', 'poll_id'])]
 class Option extends Model
 {
