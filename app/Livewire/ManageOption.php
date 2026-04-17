@@ -66,6 +66,16 @@ class ManageOption extends Component
 
     public function fetchFromUrl(): void
     {
+        $this->fetchError = '';
+
+        if (empty($this->sourceUrl)) {
+            return;
+        }
+
+        $this->validate([
+            'sourceUrl' => 'url|max:2048',
+        ]);
+
         $this->dispatchScrapeJob($this->sourceUrl);
     }
 

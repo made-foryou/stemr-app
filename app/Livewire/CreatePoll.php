@@ -76,6 +76,16 @@ class CreatePoll extends Component
 
     public function fetchFromUrl(): void
     {
+        $this->fetchError = '';
+
+        if (empty($this->optionSourceUrl)) {
+            return;
+        }
+
+        $this->validate([
+            'optionSourceUrl' => 'url|max:2048',
+        ]);
+
         $this->dispatchScrapeJob($this->optionSourceUrl);
     }
 
@@ -203,6 +213,7 @@ class CreatePoll extends Component
         $this->optionDescription = '';
         $this->fetchError = '';
         $this->scrapeResultId = null;
+        $this->scrapeStartedAt = null;
         $this->scrapedData = [];
         $this->isFetchingUrl = false;
         $this->resetValidation(['optionName', 'optionImageUrl', 'optionSourceUrl', 'optionDescription']);

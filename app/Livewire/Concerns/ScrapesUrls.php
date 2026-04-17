@@ -6,10 +6,13 @@ use App\Jobs\ScrapeUrl;
 use App\Models\ScrapeResult;
 use App\Services\UrlScraper;
 use Illuminate\Support\Js;
+use Livewire\Attributes\Computed;
 
 trait ScrapesUrls
 {
     public ?int $scrapeResultId = null;
+
+    public ?int $scrapeStartedAt = null;
 
     /** @var array{title?: ?string, description?: ?string, image_url?: ?string} */
     public array $scrapedData = [];
@@ -40,7 +43,16 @@ trait ScrapesUrls
         ScrapeUrl::dispatch($url, $result->id);
 
         $this->scrapeResultId = $result->id;
+        $this->scrapeStartedAt = time();
         $this->isFetchingUrl = true;
+    }
+
+    #[Computed]
+    public function isScrapeSlow(): bool
+    {
+        return $this->isFetchingUrl
+            && $this->scrapeStartedAt !== null
+            && (time() - $this->scrapeStartedAt) >= 10;
     }
 
     public function checkScrapeResult(): void
@@ -52,20 +64,17 @@ trait ScrapesUrls
         $result = ScrapeResult::find($this->scrapeResultId);
 
         if (! $result) {
-            $this->isFetchingUrl = false;
-            $this->scrapeResultId = null;
+            $this->resetScrapeState();
 
             return;
         }
 
         if ($result->status === 'completed') {
-            $this->isFetchingUrl = false;
-            $this->scrapeResultId = null;
+            $this->resetScrapeState();
             $this->handleScrapedResult($result->toMetadata());
         } elseif ($result->status === 'failed') {
             $this->fetchError = $result->error_message ?? 'Er is een fout opgetreden bij het ophalen van de URL.';
-            $this->isFetchingUrl = false;
-            $this->scrapeResultId = null;
+            $this->resetScrapeState();
         }
     }
 
@@ -110,6 +119,13 @@ trait ScrapesUrls
     public function dismissAllSuggestions(): void
     {
         $this->scrapedData = [];
+    }
+
+    private function resetScrapeState(): void
+    {
+        $this->isFetchingUrl = false;
+        $this->scrapeResultId = null;
+        $this->scrapeStartedAt = null;
     }
 
     /**

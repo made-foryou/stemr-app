@@ -13,22 +13,7 @@
         </div>
 
         <form wire:submit="save" class="mt-8 animate-slide-up vota-card space-y-6 p-8" style="animation-delay: 0.1s;">
-            <flux:field>
-                <flux:label>{{ __('URL importeren') }}</flux:label>
-                <div class="relative">
-                    <flux:input wire:model.live.blur="sourceUrl" type="url" placeholder="{{ __('https://booking.com/hotel/...') }}" autofocus />
-                    @if ($isFetchingUrl)
-                        <div wire:poll.2s="checkScrapeResult" class="absolute top-1/2 right-3 -translate-y-1/2">
-                            <flux:icon.arrow-path variant="mini" class="animate-spin text-zinc-400" />
-                        </div>
-                    @endif
-                </div>
-                <flux:description>{{ __('Plak een URL om automatisch de gegevens op te halen.') }}</flux:description>
-                <flux:error name="sourceUrl" />
-                @if ($fetchError)
-                    <p class="mt-1 text-sm text-red-600">{{ $fetchError }}</p>
-                @endif
-            </flux:field>
+            <x-url-scrape-field model="sourceUrl" :isFetchingUrl="$isFetchingUrl" :isScrapeSlow="$this->isScrapeSlow" :fetchError="$fetchError" autofocus />
 
             @if (!empty($scrapedData) && !$isFetchingUrl)
                 @php
