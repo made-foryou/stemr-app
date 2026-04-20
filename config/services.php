@@ -47,4 +47,9 @@ return [
         'redirect' => '/auth/apple/callback',
     ],
 
+    'scrapingbee' => [
+        'api_key' => env('SCRAPINGBEE_API_KEY'),
+        'refresh_days' => (int) env('SCRAPE_REFRESH_DAYS', 30),
+    ],
+
 ];

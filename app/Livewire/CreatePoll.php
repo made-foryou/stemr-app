@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\ScrapesUrls;
 use App\Models\Option;
 use App\Models\Poll;
 use Illuminate\View\View;
@@ -15,6 +16,8 @@ use Livewire\Component;
 #[Title('Poll aanmaken')]
 class CreatePoll extends Component
 {
+    use ScrapesUrls;
+
     public int $step = 1;
 
     public ?Poll $poll = null;
@@ -27,6 +30,8 @@ class CreatePoll extends Component
     public string $description = '';
 
     // Step 2: Option form
+    public string $optionSourceUrl = '';
+
     public string $optionName = '';
 
     public string $optionImageUrl = '';
@@ -34,6 +39,10 @@ class CreatePoll extends Component
     public string $optionDescription = '';
 
     public ?int $editingOptionId = null;
+
+    public bool $isFetchingUrl = false;
+
+    public string $fetchError = '';
 
     public function savePollInfo(): void
     {
@@ -50,11 +59,42 @@ class CreatePoll extends Component
         $this->step = 2;
     }
 
+    public function updatedOptionSourceUrl(): void
+    {
+        $this->fetchError = '';
+
+        if (empty($this->optionSourceUrl)) {
+            return;
+        }
+
+        $this->validate([
+            'optionSourceUrl' => 'url|max:2048',
+        ]);
+
+        $this->fetchFromUrl();
+    }
+
+    public function fetchFromUrl(): void
+    {
+        $this->fetchError = '';
+
+        if (empty($this->optionSourceUrl)) {
+            return;
+        }
+
+        $this->validate([
+            'optionSourceUrl' => 'url|max:2048',
+        ]);
+
+        $this->dispatchScrapeJob($this->optionSourceUrl);
+    }
+
     public function addOption(): void
     {
         $this->validate([
             'optionName' => 'required|string|max:100',
             'optionImageUrl' => 'nullable|url|max:2048',
+            'optionSourceUrl' => 'nullable|url|max:2048',
             'optionDescription' => 'nullable|string|max:500',
         ]);
 
@@ -63,6 +103,7 @@ class CreatePoll extends Component
         $this->poll->options()->create([
             'name' => $this->optionName,
             'image_url' => $this->optionImageUrl ?: null,
+            'source_url' => $this->optionSourceUrl ?: null,
             'description' => $this->optionDescription ?: null,
             'sort_order' => $nextOrder,
         ]);
@@ -76,6 +117,7 @@ class CreatePoll extends Component
         $option = $this->poll->options()->findOrFail($optionId);
 
         $this->editingOptionId = $option->id;
+        $this->optionSourceUrl = $option->source_url ?? '';
         $this->optionName = $option->name;
         $this->optionImageUrl = $option->image_url ?? '';
         $this->optionDescription = $option->description ?? '';
@@ -86,6 +128,7 @@ class CreatePoll extends Component
         $this->validate([
             'optionName' => 'required|string|max:100',
             'optionImageUrl' => 'nullable|url|max:2048',
+            'optionSourceUrl' => 'nullable|url|max:2048',
             'optionDescription' => 'nullable|string|max:500',
         ]);
 
@@ -94,6 +137,7 @@ class CreatePoll extends Component
         $option->update([
             'name' => $this->optionName,
             'image_url' => $this->optionImageUrl ?: null,
+            'source_url' => $this->optionSourceUrl ?: null,
             'description' => $this->optionDescription ?: null,
         ]);
 
@@ -151,12 +195,27 @@ class CreatePoll extends Component
         return view('livewire.create-poll');
     }
 
+    protected function getScrapedFieldMapping(): array
+    {
+        return [
+            'title' => 'optionName',
+            'description' => 'optionDescription',
+            'image_url' => 'optionImageUrl',
+        ];
+    }
+
     private function resetOptionForm(): void
     {
         $this->editingOptionId = null;
+        $this->optionSourceUrl = '';
         $this->optionName = '';
         $this->optionImageUrl = '';
         $this->optionDescription = '';
-        $this->resetValidation(['optionName', 'optionImageUrl', 'optionDescription']);
+        $this->fetchError = '';
+        $this->scrapeResultId = null;
+        $this->scrapeStartedAt = null;
+        $this->scrapedData = [];
+        $this->isFetchingUrl = false;
+        $this->resetValidation(['optionName', 'optionImageUrl', 'optionSourceUrl', 'optionDescription']);
     }
 }

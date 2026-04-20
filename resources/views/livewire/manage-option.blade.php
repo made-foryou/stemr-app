@@ -38,16 +38,51 @@
         <form wire:submit="save" class="mt-8 animate-slide-up vota-card space-y-6 p-8" style="animation-delay: 0.1s;">
             <flux:heading size="lg">{{ __('Gegevens bewerken') }}</flux:heading>
 
+            <x-url-scrape-field model="sourceUrl" :isFetchingUrl="$isFetchingUrl" :isScrapeSlow="$this->isScrapeSlow" :fetchError="$fetchError" />
+
+            @if (!empty($scrapedData) && !$isFetchingUrl)
+                @php
+                    $hasSuggestions = collect($scrapedData)->filter(fn($val, $key) =>
+                        !empty($val) && isset($this->getScrapedFieldMapping()[$key]) && $this->{$this->getScrapedFieldMapping()[$key]} !== $val
+                    )->isNotEmpty();
+                @endphp
+
+                @if ($hasSuggestions)
+                    <div class="flex items-center justify-between rounded-lg border border-dashed border-[var(--color-vota-primary)]/30 bg-[var(--color-vota-primary-light)] px-4 py-3 animate-fade-in">
+                        <div class="flex items-center gap-2 text-sm text-zinc-700">
+                            <flux:icon.sparkles variant="mini" class="text-[var(--color-vota-primary)]" />
+                            {{ __('Gegevens opgehaald van de URL') }}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button type="button" wire:click="applyAllSuggestions"
+                                class="text-sm font-medium text-[var(--color-vota-primary)] transition-colors hover:text-[var(--color-vota-primary-dark)]">
+                                {{ __('Alles toepassen') }}
+                            </button>
+                            <button type="button" wire:click="dismissAllSuggestions"
+                                class="text-sm text-zinc-400 transition-colors hover:text-zinc-600">
+                                {{ __('Negeren') }}
+                            </button>
+                        </div>
+                    </div>
+                @endif
+            @endif
+
             <flux:field>
                 <flux:label>{{ __('Naam') }} <span class="text-red-500">*</span></flux:label>
                 <flux:input wire:model="name" maxlength="100" />
                 <flux:error name="name" />
+                @if (!empty($scrapedData['title']) && ($scrapedData['title'] !== $name))
+                    <x-scrape-suggestion :value="$scrapedData['title']" field="title" />
+                @endif
             </flux:field>
 
             <flux:field>
                 <flux:label>{{ __('Afbeelding URL') }}</flux:label>
                 <flux:input wire:model.blur="imageUrl" type="url" placeholder="{{ __('https://voorbeeld.nl/afbeelding.jpg') }}" />
                 <flux:error name="imageUrl" />
+                @if (!empty($scrapedData['image_url']) && ($scrapedData['image_url'] !== $imageUrl))
+                    <x-scrape-suggestion :value="$scrapedData['image_url']" field="image_url" />
+                @endif
                 @if ($imageUrl)
                     <div class="mt-2" x-data="{ error: false }">
                         <img
@@ -72,6 +107,9 @@
                 </div>
                 <flux:textarea wire:model="description" placeholder="{{ __('Optioneel: beschrijf deze optie...') }}" rows="4" maxlength="500" />
                 <flux:error name="description" />
+                @if (!empty($scrapedData['description']) && ($scrapedData['description'] !== $description))
+                    <x-scrape-suggestion :value="$scrapedData['description']" field="description" />
+                @endif
             </flux:field>
 
             <div class="flex items-center gap-4 pt-2">
